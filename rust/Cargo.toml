@@ -1,0 +1,10 @@
+[package]
+name = "leetcode-solutions"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# Add any common dependencies you might need
+
+[dev-dependencies]
+# Testing dependencies if needed
