@@ -7,7 +7,31 @@ impl Solution {
         l1: Option<Box<ListNode>>,
         l2: Option<Box<ListNode>>,
     ) -> Option<Box<ListNode>> {
-        None
+        let mut dummy_head = Box::new(ListNode::new(0));
+        let mut current = &mut dummy_head;
+        let mut carry = 0;
+
+        let mut l1 = l1;
+        let mut l2 = l2;
+
+        while l1.is_some() || l2.is_some() || carry != 0 {
+            let sum = match l1 {
+                Some(ref node) => node.val,
+                None => 0,
+            } + match l2 {
+                Some(ref node) => node.val,
+                None => 0,
+            } + carry;
+
+            carry = sum / 10;
+            current.next = Some(Box::new(ListNode::new(sum % 10)));
+            current = current.next.as_mut().unwrap();
+
+            l1 = l1.and_then(|node| node.next);
+            l2 = l2.and_then(|node| node.next);
+        }
+
+        dummy_head.next
     }
 }
 
