@@ -1,4 +1,4 @@
-struct Solution;
+pub struct Solution;
 
 impl Solution {
     /// Counts the number of islands in a given 2D grid.
