@@ -29,6 +29,23 @@ impl TryFrom<char> for Roman {
     }
 }
 
+impl TryFrom<i32> for Roman {
+    type Error = String;
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        match value {
+            1 => Ok(Self::I),
+            5 => Ok(Self::V),
+            10 => Ok(Self::X),
+            50 => Ok(Self::L),
+            100 => Ok(Self::C),
+            500 => Ok(Self::D),
+            1000 => Ok(Self::M),
+            _ => Err(format!("'{value}' is not a valid roman value")),
+        }
+    }
+}
+
 // Roman + i32
 impl Add<i32> for Roman {
     type Output = i32;
@@ -68,5 +85,19 @@ impl Sub<Roman> for i32 {
 impl From<Roman> for i32 {
     fn from(r: Roman) -> i32 {
         r as i32
+    }
+}
+
+impl From<Roman> for char {
+    fn from(r: Roman) -> char {
+        match r {
+            Roman::I => 'I',
+            Roman::V => 'V',
+            Roman::X => 'X',
+            Roman::L => 'L',
+            Roman::C => 'C',
+            Roman::D => 'D',
+            Roman::M => 'M',
+        }
     }
 }
