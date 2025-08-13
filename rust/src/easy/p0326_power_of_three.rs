@@ -2,20 +2,45 @@ pub struct Solution;
 
 impl Solution {
     pub fn is_power_of_three(n: i32) -> bool {
-        if n <= 0 {
-            false
-        } else {
-            let mut x = n;
-            while x % 3 == 0 {
-                x /= 3;
-            }
-            x == 1
-        }
+        recursion(n)
     }
 }
+
+fn recursion(n: i32) -> bool {
+    if n <= 0 {
+        false
+    } else if n == 1 {
+        true
+    } else if n % 3 != 0 {
+        false
+    } else {
+        recursion(n / 3)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Solution;
+
+    use super::recursion;
+
+    #[test]
+    fn test_power_of_three_true() {
+        assert!(recursion(1));
+        assert!(recursion(3));
+        assert!(recursion(9));
+        assert!(recursion(27));
+        assert!(recursion(81));
+    }
+
+    #[test]
+    fn test_power_of_three_false() {
+        assert!(!recursion(0));
+        assert!(!recursion(2));
+        assert!(!recursion(10));
+        assert!(!recursion(-3));
+        assert!(!recursion(45));
+    }
 
     #[test]
     fn test_power_of_three() {
