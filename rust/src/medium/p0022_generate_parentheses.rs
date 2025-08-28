@@ -1,30 +1,70 @@
 pub struct Solution;
 
+enum Trampoline<T> {
+    Return(T),
+    Call(Box<dyn FnOnce() -> Trampoline<T>>),
+}
+
+fn run_trampoline<T>(mut tramp: Trampoline<T>) -> T {
+    loop {
+        match tramp {
+            Trampoline::Return(result) => return result,
+            Trampoline::Call(f) => tramp = f(),
+        }
+    }
+}
 impl Solution {
     pub fn generate_parenthesis(n: i32) -> Vec<String> {
-        let mut result = vec![];
         let current = String::new();
-        backtrack(&mut result, current, 0, 0, n);
-        result
+        run_trampoline(generate_parenthesis_trampoline(current, 0, 0, n))
     }
 }
 
-fn backtrack(result: &mut Vec<String>, current: String, open: i32, closed: i32, max: i32) {
+fn generate_parenthesis_trampoline(
+    current: String,
+    open: i32,
+    close: i32,
+    max: i32,
+) -> Trampoline<Vec<String>> {
     if current.len() as i32 == max * 2 {
-        result.push(current);
-        return;
+        return Trampoline::Return(vec![current]);
     }
 
+    let results = Vec::new();
+
     if open < max {
-        let mut new_current = current.clone();
-        new_current.push('(');
-        backtrack(result, new_current, open + 1, closed, max);
+        let next_current = current.clone() + "(";
+        return Trampoline::Call(Box::new(move || {
+            let mut left_results = run_trampoline(generate_parenthesis_trampoline(
+                next_current,
+                open + 1,
+                close,
+                max,
+            ));
+
+            if close < open {
+                let next_current = current + ")";
+                let right_results = run_trampoline(generate_parenthesis_trampoline(
+                    next_current,
+                    open,
+                    close + 1,
+                    max,
+                ));
+                left_results.extend(right_results);
+            }
+
+            Trampoline::Return(left_results)
+        }));
     }
-    if closed < open {
-        let mut new_current = current.clone();
-        new_current.push(')');
-        backtrack(result, new_current, open, closed + 1, max);
+
+    if close < open {
+        let next_current = current + ")";
+        return Trampoline::Call(Box::new(move || {
+            generate_parenthesis_trampoline(next_current, open, close + 1, max)
+        }));
     }
+
+    Trampoline::Return(results)
 }
 
 #[cfg(test)]
