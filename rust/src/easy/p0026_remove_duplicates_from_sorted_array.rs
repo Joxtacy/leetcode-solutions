@@ -1,7 +1,7 @@
 pub struct Solution;
 
 impl Solution {
-    pub fn remove_duplicates(nums: &mut Vec<i32>) -> i32 {
+    pub fn remove_duplicates(nums: &mut [i32]) -> i32 {
         let mut curr_num = i32::MIN;
         let mut index: usize = 0;
 
